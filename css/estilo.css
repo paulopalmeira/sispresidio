@@ -1,0 +1,59 @@
+/* Arquivo: sispresidio/css/estilo.css */
+body {
+    padding-top: 56px; /* Para acomodar o navbar fixo */
+    background-color: #f8f9fa;
+}
+
+.navbar-custom {
+    background-color: #28a745; /* Verde Bootstrap */
+}
+
+.navbar-custom .navbar-brand,
+.navbar-custom .nav-link {
+    color: #ffffff;
+}
+
+.navbar-custom .nav-link:hover {
+    color: #f8f9fa;
+}
+
+.footer {
+    padding: 1rem;
+    background-color: #e9ecef;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.card-dashboard {
+    margin-bottom: 20px;
+    border-left: 5px solid #28a745;
+}
+
+.login-container {
+    max-width: 400px;
+    margin-top: 100px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.btn-green {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: #fff;
+}
+
+.btn-green:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+    color: #fff;
+}
+
+/* Estilos para tabelas */
+.table-responsive {
+    margin-top: 20px;
+}
+
