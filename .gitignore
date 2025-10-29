@@ -1,6 +1,5 @@
 /vendor/
 /db/conexao.php
-/db/sispresidio.db
 .vscode/
 .phpunit.cache/
 .DS_Store
