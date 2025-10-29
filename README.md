@@ -7,12 +7,12 @@
 
 ## 1. Introdução e Contextualização do Projeto
 
-[cite_start]Professor, este documento apresenta a solução de software desenvolvida para a "Atividade de Entrega" da matéria de PIT - Sistemas de Informação II[cite: 13]. O projeto **Sispresidio** é uma aplicação web funcional que atende a todos os requisitos e desafios propostos, desde a modelagem e implementação do banco de dados até a codificação e a realização de testes de qualidade.
+Professor, este documento apresenta a solução de software desenvolvida para a "Atividade de Entrega" da matéria de PIT - Sistemas de Informação II. O projeto **Sispresidio** é uma aplicação web funcional que atende a todos os requisitos e desafios propostos, desde a modelagem e implementação do banco de dados até a codificação e a realização de testes de qualidade.
 
-[cite_start]O desenvolvimento observou as três situações-problema descritas no material teórico[cite: 8, 9, 10], resultando em um sistema robusto que aborda:
-* [cite_start]**Situação-Problema 1:** O projeto físico do banco de dados foi implementado em MySQL, a partir da modelagem conceitual[cite: 318].
-* [cite_start]**Situação-Problema 2:** A aplicação foi codificada utilizando PHP para o back-end e HTML/CSS/Bootstrap para o front-end, seguindo uma arquitetura organizada[cite: 323, 326].
-* [cite_start]**Situação-Problema 3:** Foram implementados testes de verificação (automatizados com PHPUnit) e o sistema está preparado para os testes de validação (aceitação pelos colegas), conforme solicitado[cite: 331, 332].
+O desenvolvimento observou as três situações-problema descritas no material teórico, resultando em um sistema robusto que aborda:
+* **Situação-Problema 1:** O projeto físico do banco de dados foi implementado em MySQL, a partir da modelagem conceitual.
+* **Situação-Problema 2:** A aplicação foi codificada utilizando PHP para o back-end e HTML/CSS/Bootstrap para o front-end, seguindo uma arquitetura organizada.
+* **Situação-Problema 3:** Foram implementados testes de verificação (automatizados com PHPUnit) e o sistema está preparado para os testes de validação (aceitação pelos colegas), conforme solicitado.
 
 ## 2. Visão Geral e Funcionalidades
 
@@ -28,15 +28,15 @@ O Sispresidio é um sistema para gerenciamento de uma unidade prisional, com con
 
 ## 3. Arquitetura e Tecnologias Utilizadas
 
-[cite_start]Conforme a liberdade de escolha de tecnologias sugerida[cite: 352, 353, 354, 355, 356], o projeto foi desenvolvido com as seguintes ferramentas:
+Conforme a liberdade de escolha de tecnologias sugerida, o projeto foi desenvolvido com as seguintes ferramentas:
 
 | Categoria                | Tecnologia            | Justificativa                                                                                             |
 | :----------------------- | :-------------------- | :-------------------------------------------------------------------------------------------------------- |
 | **Linguagem (Back-end)** | PHP 8                 | Linguagem robusta e amplamente utilizada para desenvolvimento web.                                          |
-| **Banco de Dados** | MySQL                 | [cite_start]SGBD relacional popular e de fácil manutenção, como sugerido no material[cite: 345].                       |
-| **Hospedagem** | InfinityFree          | [cite_start]Plataforma de hospedagem gratuita que suporta PHP e MySQL, atendendo ao requisito de um código funcional[cite: 354, 357]. |
+| **Banco de Dados** | MySQL                 | SGBD relacional popular e de fácil manutenção, como sugerido no material.                       |
+| **Hospedagem** | InfinityFree          | Plataforma de hospedagem gratuita que suporta PHP e MySQL, atendendo ao requisito de um código funcional. |
 | **Frontend** | HTML, CSS, Bootstrap  | Construção de interfaces responsivas e consistentes.                                                      |
-| **Testes Automatizados** | PHPUnit               | [cite_start]Framework padrão da indústria para testes unitários em PHP, citado no material da disciplina[cite: 242]. |
+| **Testes Automatizados** | PHPUnit               | Framework padrão da indústria para testes unitários em PHP, citado no material da disciplina. |
 | **Gerenciador de Pacotes** | Composer              | Para gerenciamento das dependências de desenvolvimento (PHPUnit).                                         |
 
 ### **Acesso ao Sistema em Funcionamento**
@@ -72,7 +72,7 @@ Para testar a aplicação, por favor, siga os passos abaixo:
 
 ## 5. Testes de Qualidade (Verificação)
 
-[cite_start]Para atender ao requisito de testes da "Situação-Problema 3"[cite: 331], foi implementada uma suíte de testes automatizados com PHPUnit. Estes testes de verificação garantem que a lógica interna do sistema (back-end) funciona conforme o esperado.
+Para atender ao requisito de testes da "Situação-Problema 3", foi implementada uma suíte de testes automatizados com PHPUnit. Estes testes de verificação garantem que a lógica interna do sistema (back-end) funciona conforme o esperado.
 
 #### Como Executar os Testes
 1.  Clone o repositório e execute `composer install`.
