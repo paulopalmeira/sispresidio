@@ -88,3 +88,5 @@ A suíte é composta por 6 testes que validam as funcionalidades mais críticas:
 
 #### Resultado dos Testes
 A execução da suíte de testes resulta em 100% de aprovação, confirmando a estabilidade e a qualidade do código desenvolvido.
+
+**Obrigado pela sua atenção, Professor!**
