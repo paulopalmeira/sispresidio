@@ -1,0 +1,29 @@
+# Arquivo .gitignore para o projeto Sispresidio
+
+# 1. Dependências do Composer
+# A pasta 'vendor' contém todas as bibliotecas baixadas pelo Composer.
+# Ela nunca deve ser enviada para o repositório, pois pode ser recriada
+# a qualquer momento com o comando 'composer install'.
+/vendor/
+
+# 2. Arquivos de Ambiente e Configuração Sensível
+# Arquivos que contêm senhas ou configurações específicas do seu computador.
+# É uma prática de segurança CRÍTICA não enviar arquivos de conexão com senhas.
+/db/conexao.php
+
+# 3. Arquivos de Banco de Dados Local (caso haja)
+# Ignora o banco de dados SQLite, que não é mais usado e não deve estar no repositório.
+/db/sispresidio.db
+
+# 4. Configurações de IDEs e Editores
+# Ignora arquivos de configuração específicos do seu editor (VS Code).
+.vscode/
+
+# 5. Cache de Ferramentas de Teste
+# Ignora o cache gerado pelo PHPUnit para acelerar a execução dos testes.
+.phpunit.cache/
+
+# 6. Arquivos de Sistema Operacional
+# Ignora arquivos gerados automaticamente pelo macOS e Windows.
+.DS_Store
+Thumbs.db

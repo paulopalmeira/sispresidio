@@ -1,9 +1,9 @@
 <?php
 
-$db_host = 'sql105.infinityfree.com';
-$db_name = 'if0_40269905_sispresidio';
-$db_user = 'if0_40269905';
-$db_pass = 'S10jPQunL6kF54K';
+$db_host = 'localhost';
+$db_name = 'sispresidio';
+$db_user = '******';
+$db_pass = '******';
 
 $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";
 

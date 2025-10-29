@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.5/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         colors="true">
+
+    <php>
+        <env name="DB_HOST" value="localhost"/>
+        <env name="DB_NAME" value="sispresidio"/>
+        <env name="DB_USER" value="******"/>
+        <env name="DB_PASS" value="******"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="Sispresidio Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
