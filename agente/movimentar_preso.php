@@ -1,11 +1,5 @@
 <?php
-// sispresidio/agente/movimentar_preso.php
-
-// Define o papel requerido antes de incluir o script de verificação de sessão
-$required_role = 'Agente';
 require_once __DIR__ . '/../includes/verifica_sessao.php';
-
-// Inclui o arquivo de conexão com o banco de dados
 require_once __DIR__ . '/../db/conexao.php';
 
 $mensagem = '';
@@ -13,11 +7,7 @@ $preso = null;
 $id_preso = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $celas_destino = [];
 
-// --- CÓDIGO CORRIGIDO AQUI ---
-// Função para buscar celas com vaga (apenas celas de destino)
 function buscarCelasDestino($pdo) {
-    // A consulta foi reescrita para usar a cláusula WHERE em vez de HAVING,
-    // que é a forma correta para este tipo de filtro.
     $sql = "
         SELECT 
             c.id_cela, 
@@ -36,17 +26,12 @@ function buscarCelasDestino($pdo) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// 1. Busca dados do preso se o ID estiver na URL
 if ($id_preso) {
     try {
         $sql_preso = "
             SELECT 
-                p.id_preso, 
-                p.nome, 
-                p.matricula_preso, 
-                p.id_cela_atual,
-                c.numero AS cela_origem_numero, 
-                pa.nome AS pavilhao_origem_nome
+                p.id_preso, p.nome, p.matricula_preso, p.id_cela_atual,
+                c.numero AS cela_origem_numero, pa.nome AS pavilhao_origem_nome
             FROM presos p
             LEFT JOIN celas c ON p.id_cela_atual = c.id_cela
             LEFT JOIN pavilhoes pa ON c.id_pavilhao = pa.id_pavilhao
@@ -60,36 +45,31 @@ if ($id_preso) {
             $mensagem = "<div class='alert alert-danger'>Preso não encontrado.</div>";
             $id_preso = null;
         } else {
-            // Busca celas de destino disponíveis
             $celas_destino = buscarCelasDestino($pdo);
         }
-
     } catch (PDOException $e) {
         $mensagem = "<div class='alert alert-danger'>Erro ao carregar dados do preso: " . $e->getMessage() . "</div>";
         $id_preso = null;
     }
 }
 
-// 2. Processa a movimentação
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_preso_movimentar'])) {
     $id_preso_movimentar = filter_input(INPUT_POST, 'id_preso_movimentar', FILTER_VALIDATE_INT);
     $id_cela_destino = filter_input(INPUT_POST, 'id_cela_destino', FILTER_VALIDATE_INT);
     $motivo = trim($_POST['motivo']);
     $id_usuario_responsavel = $_SESSION['id_usuario'];
-    $id_cela_origem = filter_input(INPUT_POST, 'id_cela_origem', FILTER_VALIDATE_INT); // Pode ser null
+    $id_cela_origem = filter_input(INPUT_POST, 'id_cela_origem', FILTER_VALIDATE_INT);
 
     if (!$id_preso_movimentar || !$id_cela_destino || empty($motivo)) {
         $mensagem = "<div class='alert alert-danger'>Todos os campos obrigatórios (Preso, Cela de Destino e Motivo) devem ser preenchidos.</div>";
     } else {
         try {
             $pdo->beginTransaction();
-
-            // 2.1. Insere na tabela movimentacoes
             $sql_mov = "
                 INSERT INTO movimentacoes 
                     (data_hora, motivo, id_preso, id_cela_origem, id_cela_destino, id_usuario_responsavel)
                 VALUES
-                    (datetime('now', 'localtime'), :motivo, :id_preso, :id_cela_origem, :id_cela_destino, :id_usuario_responsavel)
+                    (NOW(), :motivo, :id_preso, :id_cela_origem, :id_cela_destino, :id_usuario_responsavel)
             ";
             $stmt_mov = $pdo->prepare($sql_mov);
             $stmt_mov->execute([
@@ -99,23 +79,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_preso_movimentar']
                 ':id_cela_destino' => $id_cela_destino,
                 ':id_usuario_responsavel' => $id_usuario_responsavel
             ]);
-
-            // 2.2. Atualiza a localização do preso na tabela presos
-            $sql_preso_upd = "
-                UPDATE presos SET id_cela_atual = :id_cela_destino WHERE id_preso = :id_preso
-            ";
+            $sql_preso_upd = "UPDATE presos SET id_cela_atual = :id_cela_destino WHERE id_preso = :id_preso";
             $stmt_preso_upd = $pdo->prepare($sql_preso_upd);
-            $stmt_preso_upd->execute([
-                ':id_cela_destino' => $id_cela_destino,
-                ':id_preso' => $id_preso_movimentar
-            ]);
-
+            $stmt_preso_upd->execute([':id_cela_destino' => $id_cela_destino, ':id_preso' => $id_preso_movimentar]);
             $pdo->commit();
-            
-            // Redireciona para a lista com mensagem de sucesso
             header("Location: presos.php?movimentado=success");
             exit();
-
         } catch (PDOException $e) {
             $pdo->rollBack();
             $mensagem = "<div class='alert alert-danger'>Erro ao realizar a movimentação: " . $e->getMessage() . "</div>";
@@ -124,7 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_preso_movimentar']
     }
 }
 
-// 3. Busca lista de todos os presos para o formulário de seleção
 try {
     $stmt_todos_presos = $pdo->query("SELECT id_preso, nome, matricula_preso FROM presos ORDER BY nome ASC");
     $todos_presos = $stmt_todos_presos->fetchAll(PDO::FETCH_ASSOC);
@@ -133,16 +101,12 @@ try {
     $mensagem = "<div class='alert alert-danger'>Erro ao carregar lista de presos: " . $e->getMessage() . "</div>";
 }
 
-// Inclui o cabeçalho
 include_once __DIR__ . '/../includes/cabecalho.php';
 ?>
 
 <h1 class="mb-4">Movimentação de Presos</h1>
-
 <?php echo $mensagem; ?>
-
 <form method="POST" action="movimentar_preso.php">
-
     <div class="card mb-4">
         <div class="card-header">Seleção do Preso</div>
         <div class="card-body">
@@ -159,15 +123,12 @@ include_once __DIR__ . '/../includes/cabecalho.php';
             </div>
         </div>
     </div>
-
     <?php if ($preso): ?>
     <input type="hidden" name="id_preso_movimentar" value="<?php echo $preso['id_preso']; ?>">
     <input type="hidden" name="id_cela_origem" value="<?php echo $preso['id_cela_atual']; ?>">
-
     <div class="card mb-4">
         <div class="card-header">Detalhes da Movimentação para: **<?php echo htmlspecialchars($preso['nome']); ?>**</div>
         <div class="card-body">
-            
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label>Cela de Origem Atual</label>
@@ -175,7 +136,6 @@ include_once __DIR__ . '/../includes/cabecalho.php';
                         **<?php echo htmlspecialchars($preso['cela_origem_numero'] ?? 'N/A'); ?>** (Pavilhão: **<?php echo htmlspecialchars($preso['pavilhao_origem_nome'] ?? 'N/A'); ?>**)
                     </p>
                 </div>
-                
                 <div class="form-group col-md-6">
                     <label for="id_cela_destino">Nova Cela de Destino *</label>
                     <select id="id_cela_destino" name="id_cela_destino" class="form-control" required>
@@ -191,25 +151,18 @@ include_once __DIR__ . '/../includes/cabecalho.php';
                             <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
-                    <small class="form-text text-muted">Apenas celas em pavilhões ativos e com vagas disponíveis são listadas.</small>
                 </div>
             </div>
-
             <div class="form-group">
                 <label for="motivo">Motivo da Movimentação *</label>
                 <textarea class="form-control" id="motivo" name="motivo" rows="3" required></textarea>
             </div>
         </div>
     </div>
-
     <button type="submit" class="btn btn-green btn-lg">Realizar Movimentação</button>
     <a href="presos.php" class="btn btn-secondary btn-lg">Voltar para a Lista</a>
-
     <?php endif; ?>
-
 </form>
-
 <?php
-// Inclui o rodapé
 include_once __DIR__ . '/../includes/rodape.php';
 ?>

@@ -1,84 +1,60 @@
 # Sispresidio - Sistema de Gerenciamento Prisional
 
-**Projeto Integrador Transdisciplinar em Sistemas de Informação II** **Turma:** Turma_001 - 2025
+**Atividade de Entrega da Matéria:** Projeto Integrador Transdisciplinar em Sistemas de Informação II
+**Turma:** Turma_001 - 2025
 
 ---
 
-## 1. Visão Geral do Projeto
+## 1. Objetivo do Projeto
 
-O **Sispresidio** é um sistema web desenvolvido como atividade acadêmica para a matéria de PIT. A aplicação simula uma plataforma para o gerenciamento de um estabelecimento prisional, focando em operações essenciais como o controle de detentos, a administração da infraestrutura (pavilhões e celas) e o monitoramento de movimentações internas.
+Professor, este projeto consiste no desenvolvimento de um sistema web, o **Sispresidio**, para o gerenciamento de uma unidade prisional. O objetivo foi aplicar os conceitos aprendidos na disciplina para criar uma aplicação funcional, com lógica de negócio bem definida, controle de acesso por papéis e persistência de dados em um banco de dados relacional.
 
-O sistema foi projetado com uma arquitetura baseada em papéis de usuário, onde cada perfil (Diretor e Agente) possui permissões e acesso a funcionalidades específicas, refletindo uma estrutura organizacional realista.
+O sistema foi migrado de SQLite para **MySQL**, tornando-o mais robusto e preparado para um ambiente de produção simulado.
 
-## 2. Funcionalidades Principais
+## 2. Funcionalidades Implementadas
 
-O Sispresidio oferece um conjunto de funcionalidades robustas para diferentes níveis de acesso:
+A aplicação é dividida em dois níveis de acesso, cada um com suas respectivas responsabilidades:
 
-### Funcionalidades Gerais
-- **Autenticação Segura:** Sistema de login que verifica as credenciais do usuário e direciona para um painel de controle (dashboard) específico ao seu papel. As senhas são armazenadas de forma segura utilizando `password_hash()`.
-- **Dashboard de Indicadores:** A página inicial exibe um painel com dados em tempo real, como o número total de presos, pavilhões ativos e celas ocupadas.
-- **Controle de Acesso por Papel (RBAC):** O acesso a cada página é rigorosamente controlado, garantindo que Agentes não acessem funcionalidades de Diretores e vice-versa.
+#### Perfil: Diretor
+- **Gerenciamento de Pavilhões:** Permite ativar e desativar pavilhões, exigindo uma justificativa para cada alteração de status para fins de auditoria.
+- **Relatório de Movimentações:** Oferece uma visão completa de todas as transferências de presos, com filtros por nome e data.
 
-### Módulo do Diretor (`/diretor`)
-O Diretor possui uma visão administrativa e estratégica do sistema:
+#### Perfil: Agente
+- **Controle de Detentos:** CRUD completo para o cadastro e atualização de presos, incluindo dados pessoais e informações prisionais. O formulário utiliza máscaras para garantir a formatação correta dos documentos.
+- **Movimentação de Presos:** Ferramenta para registrar a transferência de um detento entre celas. O sistema valida a regra de negócio, exibindo apenas celas de pavilhões ativos e com vagas disponíveis.
 
-- **Gerenciamento de Pavilhões:** Permite ativar ou desativar pavilhões. Para cada ação, é obrigatório registrar uma motivação (ex: "Inativado para reforma"), que fica salva como uma observação para auditoria.
-- **Relatório de Movimentações:** Acesso a um relatório detalhado de todas as transferências de presos entre celas, com a possibilidade de filtrar por nome do detento e data da movimentação.
-
-### Módulo do Agente (`/agente`)
-O Agente é responsável pelas operações diárias e pelo controle direto dos detentos:
-
-- **Cadastro e Edição de Presos:** Formulário completo para registrar novos detentos ou atualizar informações de existentes, incluindo dados pessoais e prisionais. O formulário utiliza máscaras de entrada para garantir a formatação correta de CPF, RG e matrícula.
-- **Gerenciamento de Presos:** Tela que exibe a lista completa de detentos, com informações sobre sua alocação atual (cela e pavilhão).
-- **Movimentação de Presos:** Funcionalidade para transferir um preso de uma cela para outra. O sistema exibe apenas celas de destino que estejam em pavilhões ativos e com vagas disponíveis.
-
-## 3. Estrutura do Banco de Dados
-
-O sistema utiliza um banco de dados **SQLite**, o que o torna leve e portátil, sem a necessidade de um servidor de banco de dados separado. A estrutura é composta pelas seguintes tabelas:
-
-- `usuarios`: Armazena os dados de login (matrícula, senha hasheada, tipo).
-- `pavilhoes`: Registra os pavilhões da unidade, com nome e status (Ativo/Inativo).
-- `celas`: Contém as celas, sua capacidade e a qual pavilhão pertencem. A regra de negócio define 8 celas por pavilhão.
-- `presos`: Tabela principal com todos os dados dos detentos.
-- `movimentacoes`: Funciona como um log, registrando cada transferência de um preso.
-
-## 4. Tecnologias Utilizadas
+## 3. Arquitetura e Tecnologias
 
 - **Backend:** PHP 8
-- **Banco de Dados:** SQLite 3
+- **Banco de Dados:** MySQL
 - **Frontend:** HTML5, CSS3, Bootstrap 4
-- **Interatividade:** JavaScript e jQuery (para máscaras de formulário e componentes do Bootstrap)
+- **Cliente-Side Scripting:** JavaScript e jQuery (utilizado para máscaras de formulário e componentes interativos).
 
-## 5. Como Executar e Testar o Projeto
+## 4. Como Executar o Projeto
 
-### Pré-requisitos
-- Servidor web local com suporte a PHP (XAMPP, WAMP, etc.).
-- PHP 8 ou superior.
+Para testar a aplicação, por favor, siga os passos abaixo:
 
-### Passos para Instalação
-1.  **Clone ou baixe** os arquivos do projeto para o diretório do seu servidor web (ex: `htdocs` no XAMPP).
-2.  **Crie o Banco de Dados:**
-    - Abra um terminal ou prompt de comando.
-    - Navegue até a pasta raiz do projeto (`sispresidio/`).
-    - Execute o comando: `php db/criar_banco.php`.
-    - Isso criará o arquivo `sispresidio.db` com as tabelas e os usuários padrão.
-3.  **(Opcional) Povoar o Banco de Dados:**
-    - Para testar o sistema com dados fictícios, execute: `php db/povoar_presos.php`.
-    - Isso irá cadastrar 20 presos com dados aleatórios e únicos.
-4.  **Acesse o Sistema:**
-    - Abra o navegador e acesse `http://localhost/sispresidio/` (ou o caminho correspondente no seu servidor).
-    - Você será redirecionado para a tela de login.
+#### Passo 1: Configuração do Banco de Dados
+1.  Crie um banco de dados MySQL no seu servidor.
+2.  Atualize o arquivo `sispresidio/db/conexao.php` com as credenciais de acesso (host, nome do banco, usuário e senha).
 
-### Credenciais de Teste
-Acesse o sistema utilizando os seguintes usuários padrão:
+#### Passo 2: Criação da Estrutura
+1.  Após configurar a conexão, acesse o arquivo `sispresidio/db/criar_banco.php` através do navegador.
+2.  Este script criará todas as tabelas necessárias e inserirá os usuários padrão, além da estrutura de pavilhões e celas (8 celas por pavilhão).
 
--   **Perfil Diretor:**
-    -   **Matrícula:** `diretor123`
-    -   **Senha:** `senha_diretor`
+#### Passo 3: (Opcional) Povoar com Dados de Teste
+-   Para popular o sistema com 20 presos gerados aleatoriamente, acesse o arquivo `sispresidio/db/povoar_presos.php` pelo navegador.
 
--   **Perfil Agente:**
-    -   **Matrícula:** `agente123`
-    -   **Senha:** `senha_agente`
+#### Passo 4: Acessar o Sistema
+-   Acesse a raiz do projeto pelo navegador.
+-   Utilize as credenciais abaixo para fazer login:
+
+    -   **Usuário Diretor:**
+        -   **Matrícula:** `diretor123`
+        -   **Senha:** `senha_diretor`
+
+    -   **Usuário Agente:**
+        -   **Matrícula:** `agente123`
+        -   **Senha:** `senha_agente`
 
 ---
-*Este projeto é estritamente para fins acadêmicos e não deve ser utilizado em um ambiente de produção.*

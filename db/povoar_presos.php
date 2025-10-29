@@ -1,20 +1,9 @@
 <?php
-/**
- * Script Aprimorado para Povoar a Tabela de Presos com Dados Únicos
- *
- * MODO DE USAR:
- * 1. APAGUE o arquivo de banco de dados existente (sispresidio/db/sispresidio.db) para começar do zero.
- * 2. CRIE o banco novamente com: php db/criar_banco.php
- * 3. EXECUTE este script com: php db/povoar_presos.php
- */
 
-// Inclui o arquivo de conexão com o banco de dados
 require_once __DIR__ . '/conexao.php';
 
-// --- BANCO DE DADOS PARA GERAÇÃO ALEATÓRIA ---
-
 $primeiros_nomes = ['Carlos', 'João', 'Marcos', 'Fernando', 'Lucas', 'Ricardo', 'Sérgio', 'Diego', 'Bruno', 'Rafael', 'Alexandre', 'Felipe', 'Eduardo', 'Marcelo', 'Leandro', 'Thiago', 'Vinicius', 'Gustavo'];
-$sobrenomes = ['Silva', 'Santos Gomes', 'Oliveira de Lima', 'Souza', 'Rodrigues Alves', 'Ferreira', 'Almeida Lima', 'Pereira', 'Lima Silva', 'Gomes', 'Ribeiro', 'Martins', 'Carvalho', 'Costa', 'Mendes', 'Nunes', 'Barbosa Santos', 'Araújo'];
+$sobrenomes = ['Silva', 'Santos', 'Oliveira', 'Souza', 'Rodrigues', 'Ferreira', 'Almeida', 'Pereira', 'Lima', 'Gomes', 'Ribeiro', 'Martins', 'Carvalho', 'Costa', 'Mendes', 'Nunes', 'Barbosa', 'Araújo'];
 $crimes = ['Tráfico de Drogas', 'Roubo Qualificado', 'Homicídio Simples', 'Furto', 'Estelionato', 'Associação Criminosa', 'Receptação', 'Porte Ilegal de Arma'];
 $observacoes_parts = [
     'tatuagens' => [
@@ -32,15 +21,11 @@ $observacoes_parts = [
     ]
 ];
 
-
-// --- FUNÇÕES AUXILIARES ---
-
-// Gera um valor único que ainda não foi usado
 function gerar_valor_unico($funcao_geradora, &$array_usados) {
     do {
         $valor = call_user_func($funcao_geradora);
     } while (isset($array_usados[$valor]));
-    $array_usados[$valor] = true; // Marca como usado
+    $array_usados[$valor] = true;
     return $valor;
 }
 
@@ -76,21 +61,17 @@ function gerar_observacao_criativa($parts) {
     return implode(' ', $obs_final);
 }
 
-// --- LÓGICA PRINCIPAL ---
-
 try {
     echo "Iniciando o povoamento do banco de dados...\n";
 
-    // 1. Gera lista de nomes únicos
     $nomes_completos = [];
     foreach ($primeiros_nomes as $p_nome) {
         foreach ($sobrenomes as $s_nome) {
             $nomes_completos[] = "$p_nome $s_nome";
         }
     }
-    shuffle($nomes_completos); // Embaralha a lista para garantir aleatoriedade
+    shuffle($nomes_completos);
 
-    // 2. Busca celas disponíveis
     $stmt_celas = $pdo->query("SELECT c.id_cela, c.capacidade, (SELECT COUNT(*) FROM presos WHERE id_cela_atual = c.id_cela) as ocupacao FROM celas c JOIN pavilhoes p ON c.id_pavilhao = p.id_pavilhao WHERE p.status = 'Ativo'");
     $celas_com_vagas = array_filter($stmt_celas->fetchAll(PDO::FETCH_ASSOC), fn($cela) => $cela['ocupacao'] < $cela['capacidade']);
 
@@ -105,7 +86,6 @@ try {
         throw new Exception("Não há combinações de nomes suficientes para criar {$total_presos_a_criar} presos únicos.");
     }
 
-    // Arrays para garantir a unicidade de CPF, RG e Matrícula
     $cpfs_usados = [];
     $rgs_usados = [];
     $matriculas_usadas = [];
@@ -114,8 +94,7 @@ try {
         $indice_cela = array_rand($celas_com_vagas);
         $id_cela_selecionada = $celas_com_vagas[$indice_cela]['id_cela'];
 
-        // Dados do Preso
-        $nome = array_pop($nomes_completos); // Pega e remove um nome da lista
+        $nome = array_pop($nomes_completos);
         $matricula = gerar_valor_unico('gerar_matricula_preso', $matriculas_usadas);
         $cpf = gerar_valor_unico('gerar_cpf', $cpfs_usados);
         $rg = gerar_valor_unico('gerar_rg', $rgs_usados);
@@ -124,7 +103,6 @@ try {
         $crime = $crimes[array_rand($crimes)];
         $observacoes = gerar_observacao_criativa($observacoes_parts);
 
-        // Prepara e executa a inserção
         $sql = "INSERT INTO presos (nome, matricula_preso, cpf, rg, data_nascimento, sexo, data_entrada, crime_cometido, observacoes, id_cela_atual) VALUES (:nome, :matricula_preso, :cpf, :rg, :data_nascimento, 'MASCULINO', :data_entrada, :crime_cometido, :observacoes, :id_cela_atual)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([
@@ -133,7 +111,6 @@ try {
             ':crime_cometido' => $crime, ':observacoes' => $observacoes, ':id_cela_atual' => $id_cela_selecionada
         ]);
 
-        // Atualiza a ocupação da cela e a remove se estiver lotada
         $celas_com_vagas[$indice_cela]['ocupacao']++;
         if ($celas_com_vagas[$indice_cela]['ocupacao'] >= $celas_com_vagas[$indice_cela]['capacidade']) {
             unset($celas_com_vagas[$indice_cela]);
