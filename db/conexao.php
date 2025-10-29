@@ -3,7 +3,7 @@
 $db_host = 'sql105.infinityfree.com';
 $db_name = 'XXX';
 $db_user = 'XXX';
-$db_pass = 'S10jPQunL6kF54K';
+$db_pass = 'xxx';
 
 $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";
 
