@@ -1,5 +1,5 @@
 <?php
-
+// Projeto Integrador Transdisciplinar em Sistemas de Informação II - Turma 001 - 2025
 require_once __DIR__ . '/conexao.php';
 
 try {

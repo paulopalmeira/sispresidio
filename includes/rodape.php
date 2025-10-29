@@ -1,4 +1,5 @@
 <?php
+// Projeto Integrador Transdisciplinar em Sistemas de Informação II - Turma 001 - 2025
 ?>
 </div> <footer class="footer text-center">
     <div class="container">

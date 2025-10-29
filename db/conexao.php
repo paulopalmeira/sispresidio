@@ -1,5 +1,5 @@
 <?php
-
+// Projeto Integrador Transdisciplinar em Sistemas de Informação II - Turma 001 - 2025
 $db_host = 'localhost';
 $db_name = 'sispresidio';
 $db_user = '******';

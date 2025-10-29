@@ -1,5 +1,5 @@
 <?php
-
+// Projeto Integrador Transdisciplinar em Sistemas de Informação II - Turma 001 - 2025
 $required_role = 'Diretor';
 require_once __DIR__ . '/../includes/verifica_sessao.php';
 
