@@ -61,9 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Sispresidio</title>
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- CSS Personalizado -->
     <link rel="stylesheet" href="../css/estilo.css">
     <style>
         body {
@@ -98,8 +96,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <button type="submit" class="btn btn-green btn-block">Entrar</button>
     </form>
 
-    <p class="mt-3 text-center text-muted">
-        Para teste: Diretor (matrícula: diretor123, senha: senha_diretor) | Agente (matrícula: agente123, senha: senha_agente)
+    <div class="card mt-4">
+        <div class="card-body text-secondary text-center small">
+            <p class="card-title font-weight-bold">Ambiente de Teste</p>
+            <p class="card-text mb-1"><strong>Diretor</strong> &rarr; Matrícula: <code>diretor123</code> | Senha: <code>senha_diretor</code></p>
+            <p class="card-text"><strong>Agente</strong> &rarr; Matrícula: <code>agente123</code> | Senha: <code>senha_agente</code></p>
+        </div>
+    </div>
+
+    <p class="mt-4 text-center text-muted small">
+        Atividade de Entrega da matéria <strong>PIT - Projeto Integrador Transdisciplinar em Sistemas de Informação II - Turma_001 - 2025</strong>
     </p>
 </div>
 

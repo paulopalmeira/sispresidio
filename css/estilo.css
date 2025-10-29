@@ -1,4 +1,17 @@
 /* Arquivo: sispresidio/css/estilo.css */
+
+/* Adicionado para centralizar a tabela e limitar sua largura */
+.table-container {
+    width: 99%;
+    margin: 0 auto; /* Centraliza o container */
+}
+
+/* Adicionado para forçar a tabela a respeitar as larguras de coluna definidas */
+.table-fixed {
+    table-layout: fixed;
+    width: 100%; /* Garante que a tabela ocupe todo o espaço do container */
+}
+
 body {
     padding-top: 56px; /* Para acomodar o navbar fixo */
     background-color: #f8f9fa;

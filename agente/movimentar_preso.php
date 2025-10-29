@@ -13,8 +13,11 @@ $preso = null;
 $id_preso = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 $celas_destino = [];
 
+// --- CÓDIGO CORRIGIDO AQUI ---
 // Função para buscar celas com vaga (apenas celas de destino)
 function buscarCelasDestino($pdo) {
+    // A consulta foi reescrita para usar a cláusula WHERE em vez de HAVING,
+    // que é a forma correta para este tipo de filtro.
     $sql = "
         SELECT 
             c.id_cela, 
@@ -24,8 +27,9 @@ function buscarCelasDestino($pdo) {
             (SELECT COUNT(*) FROM presos WHERE id_cela_atual = c.id_cela) AS ocupacao
         FROM celas c
         JOIN pavilhoes pa ON c.id_pavilhao = pa.id_pavilhao
-        WHERE pa.status = 'Ativo'
-        HAVING c.capacidade > ocupacao
+        WHERE 
+            pa.status = 'Ativo' AND
+            c.capacidade > (SELECT COUNT(*) FROM presos WHERE id_cela_atual = c.id_cela)
         ORDER BY pa.nome, c.numero
     ";
     $stmt = $pdo->query($sql);
@@ -115,10 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_preso_movimentar']
         } catch (PDOException $e) {
             $pdo->rollBack();
             $mensagem = "<div class='alert alert-danger'>Erro ao realizar a movimentação: " . $e->getMessage() . "</div>";
-            // Recarrega dados do preso e celas para exibir o formulário novamente
             $id_preso = $id_preso_movimentar;
-            // É necessário recarregar o preso e as celas de destino se a transação falhar
-            // Para simplificar, vamos apenas exibir a mensagem de erro e manter o POST.
         }
     }
 }
@@ -171,8 +172,7 @@ include_once __DIR__ . '/../includes/cabecalho.php';
                 <div class="form-group col-md-6">
                     <label>Cela de Origem Atual</label>
                     <p class="form-control-static">
-                        **<?php echo htmlspecialchars($preso['cela_origem_numero'] ?? 'N/A'); ?>** 
-                        (Pavilhão: **<?php echo htmlspecialchars($preso['pavilhao_origem_nome'] ?? 'N/A'); ?>**)
+                        **<?php echo htmlspecialchars($preso['cela_origem_numero'] ?? 'N/A'); ?>** (Pavilhão: **<?php echo htmlspecialchars($preso['pavilhao_origem_nome'] ?? 'N/A'); ?>**)
                     </p>
                 </div>
                 
@@ -183,7 +183,6 @@ include_once __DIR__ . '/../includes/cabecalho.php';
                         <?php foreach ($celas_destino as $cela): ?>
                             <?php 
                                 $vagas = $cela['capacidade'] - $cela['ocupacao'];
-                                // Não lista a cela de origem como destino, a menos que seja para um preso não alocado
                                 if ($cela['id_cela'] != $preso['id_cela_atual']): 
                             ?>
                                 <option value="<?php echo $cela['id_cela']; ?>">

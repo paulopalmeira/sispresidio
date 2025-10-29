@@ -17,7 +17,8 @@ if (session_status() == PHP_SESSION_NONE) {
 if (!isset($_SESSION['id_usuario']) || !isset($_SESSION['tipo']) || !isset($_SESSION['nome'])) {
     // Se não estiver logado, destrói a sessão e redireciona para a página de login
     session_destroy();
-    header("Location: /login.php");
+    // Corrigido para apontar para o login dentro da pasta public
+    header("Location: ../public/login.php"); // <--- CORREÇÃO
     exit();
 }
 

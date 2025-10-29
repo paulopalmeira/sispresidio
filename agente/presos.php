@@ -84,7 +84,9 @@ include_once __DIR__ . '/../includes/cabecalho.php';
         </tbody>
     </table>
 </div>
-
+<br>
+<br>
+<br>
 <?php
 // Inclui o rodapé
 include_once __DIR__ . '/../includes/rodape.php';

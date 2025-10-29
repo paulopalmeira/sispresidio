@@ -18,6 +18,8 @@ $celas_disponiveis = [];
 
 // Função para buscar celas com vaga
 function buscarCelasDisponiveis($pdo, $cela_atual_id = null) {
+    // A consulta foi reescrita para usar a cláusula WHERE em vez de HAVING,
+    // que é a forma correta de filtrar linhas baseada em condições não agregadas.
     $sql = "
         SELECT 
             c.id_cela, 
@@ -27,8 +29,9 @@ function buscarCelasDisponiveis($pdo, $cela_atual_id = null) {
             (SELECT COUNT(*) FROM presos WHERE id_cela_atual = c.id_cela) AS ocupacao
         FROM celas c
         JOIN pavilhoes pa ON c.id_pavilhao = pa.id_pavilhao
-        WHERE pa.status = 'Ativo'
-        HAVING c.capacidade > ocupacao OR c.id_cela = :cela_atual_id
+        WHERE 
+            pa.status = 'Ativo' AND
+            (c.capacidade > (SELECT COUNT(*) FROM presos WHERE id_cela_atual = c.id_cela) OR c.id_cela = :cela_atual_id)
         ORDER BY pa.nome, c.numero
     ";
     $stmt = $pdo->prepare($sql);
@@ -230,8 +233,26 @@ include_once __DIR__ . '/../includes/cabecalho.php';
     <a href="presos.php" class="btn btn-secondary btn-lg">Voltar para a Lista</a>
 
 </form>
-
+<br>
+<br>
+<br>
 <?php
-// Inclui o rodapé
+// Define o script adicional para esta página
+$scripts_adicionais = "
+<script>
+$(document).ready(function(){
+  $('#matricula_preso').mask('000.000-0');
+  $('#cpf').mask('000.000.000-00');
+  // Para o RG, a máscara permite um último caractere alfanumérico (ex: X ou 1)
+  $('#rg').mask('00.000.000-A', {
+    translation: {
+      'A': {pattern: /[0-9A-Za-z]/}
+    }
+  });
+});
+</script>
+";
+
+// Inclui o rodapé, que por sua vez incluirá os scripts acima
 include_once __DIR__ . '/../includes/rodape.php';
 ?>
