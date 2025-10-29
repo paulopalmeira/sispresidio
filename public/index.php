@@ -1,44 +1,33 @@
 <?php
-// sispresidio/public/index.php
 
-// Inclui o script de verificação de sessão.
-// Se não estiver logado, redireciona para login.php
 require_once __DIR__ . '/../includes/verifica_sessao.php';
 
-// Inclui o arquivo de conexão com o banco de dados
 require_once __DIR__ . '/../db/conexao.php';
 
-// Inclui o cabeçalho (que contém o HTML inicial e o menu)
 include_once __DIR__ . '/../includes/cabecalho.php';
 
 $tipo_usuario = $_SESSION['tipo'];
 $nome_usuario = $_SESSION['nome'];
 
-// Variáveis para indicadores (exemplo)
 $total_presos = 0;
 $total_pavilhoes = 0;
 $total_celas = 0;
 $celas_ocupadas = 0;
 
 try {
-    // Indicador 1: Total de Presos
     $stmt = $pdo->query("SELECT COUNT(id_preso) FROM presos");
     $total_presos = $stmt->fetchColumn();
 
-    // Indicador 2: Total de Pavilhões Ativos
     $stmt = $pdo->query("SELECT COUNT(id_pavilhao) FROM pavilhoes WHERE status = 'Ativo'");
     $total_pavilhoes = $stmt->fetchColumn();
 
-    // Indicador 3: Total de Celas
     $stmt = $pdo->query("SELECT COUNT(id_cela) FROM celas");
     $total_celas = $stmt->fetchColumn();
 
-    // Indicador 4: Celas Ocupadas (onde há pelo menos 1 preso)
     $stmt = $pdo->query("SELECT COUNT(DISTINCT id_cela_atual) FROM presos WHERE id_cela_atual IS NOT NULL");
     $celas_ocupadas = $stmt->fetchColumn();
 
 } catch (PDOException $e) {
-    // Em um ambiente real, você registraria este erro.
     echo "<div class='alert alert-danger'>Erro ao carregar indicadores: " . $e->getMessage() . "</div>";
 }
 
@@ -107,6 +96,5 @@ try {
 <?php endif; ?>
 
 <?php
-// Inclui o rodapé
 include_once __DIR__ . '/../includes/rodape.php';
 ?>

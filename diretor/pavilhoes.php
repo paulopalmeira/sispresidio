@@ -1,22 +1,17 @@
 <?php
-// sispresidio/diretor/pavilhoes.php
 
-// Define o papel requerido antes de incluir o script de verificação de sessão
 $required_role = 'Diretor';
 require_once __DIR__ . '/../includes/verifica_sessao.php';
 
-// Inclui o arquivo de conexão com o banco de dados
 require_once __DIR__ . '/../db/conexao.php';
 
 $mensagem = '';
 
-// 1. Processa a requisição de mudança de status
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id_pavilhao = filter_input(INPUT_POST, 'id_pavilhao', FILTER_VALIDATE_INT);
     $novo_status_acao = trim($_POST['status'] ?? '');
     $motivo = trim($_POST['motivo'] ?? '');
     
-    // Validação mais robusta
     if (!$id_pavilhao) {
         $mensagem = "<div class='alert alert-danger'>Erro: ID do pavilhão inválido.</div>";
     } else if (empty($motivo)) {
@@ -37,7 +32,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-// 2. Busca a lista de pavilhões
 try {
     $stmt = $pdo->query("SELECT id_pavilhao, nome, status, observacoes FROM pavilhoes ORDER BY nome ASC");
     $pavilhoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -46,7 +40,6 @@ try {
     $mensagem = "<div class='alert alert-danger'>Erro ao carregar pavilhões: " . $e->getMessage() . "</div>";
 }
 
-// Inclui o cabeçalho
 include_once __DIR__ . '/../includes/cabecalho.php';
 ?>
 
@@ -138,45 +131,36 @@ include_once __DIR__ . '/../includes/cabecalho.php';
 </div>
 
 <?php
-// Inclui o rodapé
 include_once __DIR__ . '/../includes/rodape.php';
 ?>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Pega todos os botões que abrem o modal
     var acaoButtons = document.querySelectorAll('.acao-btn');
     
-    // Adiciona um evento de clique para cada botão
     acaoButtons.forEach(function (button) {
         button.addEventListener('click', function () {
-            // Pega os dados do botão clicado
             var pavilhaoId = this.getAttribute('data-id');
             var acao = this.getAttribute('data-acao');
             var nomePavilhao = this.getAttribute('data-nome');
 
-            // Pega os elementos do modal
             var modal = document.getElementById('acaoPavilhaoModal');
             var modalTitle = modal.querySelector('.modal-title');
             var modalAcaoTexto = modal.querySelector('#modal-acao-texto');
             var modalNomePavilhao = modal.querySelector('#modal-nome-pavilhao');
             var modalInputId = modal.querySelector('#modal-id_pavilhao');
             var modalInputStatus = modal.querySelector('#modal-status');
-            var modalTextareaMotivo = modal.querySelector('#motivo-textarea'); // Pega a textarea
+            var modalTextareaMotivo = modal.querySelector('#motivo-textarea');
             var modalSubmitButton = modal.querySelector('.btn-primary');
 
-            // --- CORREÇÃO APLICADA AQUI ---
-            // Limpa o campo de motivação sempre que o modal é aberto
             modalTextareaMotivo.value = '';
 
-            // Atualiza o conteúdo do modal com os dados
             modalTitle.textContent = acao + ' Pavilhão';
             modalAcaoTexto.textContent = acao.toLowerCase();
             modalNomePavilhao.textContent = nomePavilhao;
             modalInputId.value = pavilhaoId;
             modalInputStatus.value = acao;
             
-            // Muda a cor do botão de confirmação
             if (acao === 'Desativar') {
                 modalSubmitButton.classList.remove('btn-success');
                 modalSubmitButton.classList.add('btn-danger');

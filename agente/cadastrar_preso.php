@@ -1,11 +1,7 @@
 <?php
-// sispresidio/agente/cadastrar_preso.php
 
-// Define o papel requerido antes de incluir o script de verificação de sessão
 $required_role = 'Agente';
 require_once __DIR__ . '/../includes/verifica_sessao.php';
-
-// Inclui o arquivo de conexão com o banco de dados
 require_once __DIR__ . '/../db/conexao.php';
 
 $mensagem = '';
@@ -16,10 +12,7 @@ $preso = [
 ];
 $celas_disponiveis = [];
 
-// Função para buscar celas com vaga
 function buscarCelasDisponiveis($pdo, $cela_atual_id = null) {
-    // A consulta foi reescrita para usar a cláusula WHERE em vez de HAVING,
-    // que é a forma correta de filtrar linhas baseada em condições não agregadas.
     $sql = "
         SELECT 
             c.id_cela, 
@@ -39,7 +32,6 @@ function buscarCelasDisponiveis($pdo, $cela_atual_id = null) {
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// 1. Lógica de Edição (se houver ID na URL)
 $is_edit = false;
 $id_preso = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
@@ -61,13 +53,10 @@ if ($id_preso) {
     }
 }
 
-// Busca celas disponíveis (incluindo a cela atual do preso em edição)
 $celas_disponiveis = buscarCelasDisponiveis($pdo, $preso['id_cela_atual']);
 
 
-// 2. Processa o formulário (Cadastro ou Edição)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Validação e sanitização
     $nome = trim($_POST['nome']);
     $matricula_preso = trim($_POST['matricula_preso']);
     $cpf = trim($_POST['cpf']);
@@ -79,13 +68,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $observacoes = trim($_POST['observacoes']);
     $id_cela_atual = filter_input(INPUT_POST, 'id_cela_atual', FILTER_VALIDATE_INT);
 
-    // Validação básica
     if (empty($nome) || empty($matricula_preso) || empty($data_entrada)) {
         $mensagem = "<div class='alert alert-danger'>Os campos Nome, Matrícula e Data de Entrada são obrigatórios.</div>";
     } else {
         try {
             if ($is_edit) {
-                // EDIÇÃO
                 $sql = "
                     UPDATE presos SET 
                         nome = :nome, matricula_preso = :matricula_preso, cpf = :cpf, rg = :rg,
@@ -108,11 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':id_preso' => $id_preso
                 ]);
                 $mensagem = "<div class='alert alert-success'>Preso atualizado com sucesso!</div>";
-                // Atualiza o objeto $preso para refletir as mudanças no formulário
                 $preso = array_merge($preso, $_POST);
 
             } else {
-                // CADASTRO
                 $sql = "
                     INSERT INTO presos 
                         (nome, matricula_preso, cpf, rg, data_nascimento, sexo, data_entrada, crime_cometido, observacoes, id_cela_atual)
@@ -132,24 +117,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':observacoes' => $observacoes,
                     ':id_cela_atual' => $id_cela_atual
                 ]);
-                // Redireciona para a lista com mensagem de sucesso
                 header("Location: presos.php?msg=success");
                 exit();
             }
         } catch (PDOException $e) {
-            // Verifica se é erro de chave única (CPF, RG, Matrícula)
             if (strpos($e->getMessage(), 'UNIQUE constraint failed') !== false) {
                 $mensagem = "<div class='alert alert-danger'>Erro: Matrícula, CPF ou RG já cadastrado.</div>";
             } else {
                 $mensagem = "<div class='alert alert-danger'>Erro no banco de dados: " . $e->getMessage() . "</div>";
             }
-            // Recarrega celas disponíveis em caso de erro
             $celas_disponiveis = buscarCelasDisponiveis($pdo, $preso['id_cela_atual']);
         }
     }
 }
 
-// Inclui o cabeçalho
 include_once __DIR__ . '/../includes/cabecalho.php';
 ?>
 
@@ -237,13 +218,11 @@ include_once __DIR__ . '/../includes/cabecalho.php';
 <br>
 <br>
 <?php
-// Define o script adicional para esta página
 $scripts_adicionais = "
 <script>
 $(document).ready(function(){
   $('#matricula_preso').mask('000.000-0');
   $('#cpf').mask('000.000.000-00');
-  // Para o RG, a máscara permite um último caractere alfanumérico (ex: X ou 1)
   $('#rg').mask('00.000.000-A', {
     translation: {
       'A': {pattern: /[0-9A-Za-z]/}
@@ -253,6 +232,5 @@ $(document).ready(function(){
 </script>
 ";
 
-// Inclui o rodapé, que por sua vez incluirá os scripts acima
 include_once __DIR__ . '/../includes/rodape.php';
 ?>

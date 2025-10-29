@@ -1,11 +1,8 @@
 <?php
-// sispresidio/diretor/relatorio_movimentacoes.php
 
-// Define o papel requerido antes de incluir o script de verificação de sessão
 $required_role = 'Diretor';
 require_once __DIR__ . '/../includes/verifica_sessao.php';
 
-// Inclui o arquivo de conexão com o banco de dados
 require_once __DIR__ . '/../db/conexao.php';
 
 $mensagem = '';
@@ -13,7 +10,6 @@ $movimentacoes = [];
 $filtro_nome = $_GET['nome'] ?? '';
 $filtro_data = $_GET['data'] ?? '';
 
-// Constrói a consulta SQL base
 $sql = "
     SELECT 
         m.data_hora, 
@@ -36,13 +32,11 @@ $sql = "
 
 $params = [];
 
-// Adiciona filtro por nome do preso
 if (!empty($filtro_nome)) {
     $sql .= " AND p.nome LIKE :nome";
     $params[':nome'] = '%' . $filtro_nome . '%';
 }
 
-// Adiciona filtro por data
 if (!empty($filtro_data)) {
     $sql .= " AND DATE(m.data_hora) = :data";
     $params[':data'] = $filtro_data;
@@ -58,7 +52,6 @@ try {
     $mensagem = "<div class='alert alert-danger'>Erro ao carregar movimentações: " . $e->getMessage() . "</div>";
 }
 
-// Inclui o cabeçalho
 include_once __DIR__ . '/../includes/cabecalho.php';
 ?>
 
@@ -121,6 +114,5 @@ include_once __DIR__ . '/../includes/cabecalho.php';
 </div>
 
 <?php
-// Inclui o rodapé
 include_once __DIR__ . '/../includes/rodape.php';
 ?>

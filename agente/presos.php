@@ -1,11 +1,8 @@
 <?php
-// sispresidio/agente/presos.php
 
-// Define o papel requerido antes de incluir o script de verificação de sessão
 $required_role = 'Agente';
 require_once __DIR__ . '/../includes/verifica_sessao.php';
 
-// Inclui o arquivo de conexão com o banco de dados
 require_once __DIR__ . '/../db/conexao.php';
 
 $mensagem = '';
@@ -16,8 +13,6 @@ if (isset($_GET['movimentado'])) {
     $mensagem = "<div class='alert alert-success'>Preso movimentado com sucesso!</div>";
 }
 
-
-// 1. Busca a lista de presos com suas celas e pavilhões
 try {
     $sql = "
         SELECT 
@@ -39,7 +34,6 @@ try {
     $mensagem = "<div class='alert alert-danger'>Erro ao carregar presos: " . $e->getMessage() . "</div>";
 }
 
-// Inclui o cabeçalho
 include_once __DIR__ . '/../includes/cabecalho.php';
 ?>
 
@@ -88,6 +82,5 @@ include_once __DIR__ . '/../includes/cabecalho.php';
 <br>
 <br>
 <?php
-// Inclui o rodapé
 include_once __DIR__ . '/../includes/rodape.php';
 ?>
