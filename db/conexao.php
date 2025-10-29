@@ -1,8 +1,8 @@
 <?php
 
 $db_host = 'sql105.infinityfree.com';
-$db_name = 'if0_40269905_sispresidio';
-$db_user = 'if0_40269905';
+$db_name = 'XXX';
+$db_user = 'XXX';
 $db_pass = 'S10jPQunL6kF54K';
 
 $dsn = "mysql:host=$db_host;dbname=$db_name;charset=utf8mb4";
