@@ -1,7 +1,7 @@
 # Sispresidio - Sistema de Gerenciamento Prisional
 
 **Projeto Integrador Transdisciplinar em Sistemas de Informação II**
-**Turma:** Turma 001 - 2025
+**Turma: 001 - 2025**
 
 ---
 
