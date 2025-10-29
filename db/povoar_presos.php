@@ -1,5 +1,6 @@
 <?php
 // Projeto Integrador Transdisciplinar em Sistemas de Informação II - Turma 001 - 2025
+// Aluno: Paulo Roberto Palmeira - RGM: 29651301
 require_once __DIR__ . '/conexao.php';
 
 $primeiros_nomes = ['Carlos', 'João', 'Marcos', 'Fernando', 'Lucas', 'Ricardo', 'Sérgio', 'Diego', 'Bruno', 'Rafael', 'Alexandre', 'Felipe', 'Eduardo', 'Marcelo', 'Leandro', 'Thiago', 'Vinicius', 'Gustavo'];
